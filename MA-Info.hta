@@ -1,8 +1,8 @@
 <HTA:application
 	APPLICATIONNAME="MA Info"   
-     SCROLL="auto"
-     SINGLEINSTANCE="yes"
-     icon = 'MA-Info.hta'
+	SCROLL="auto"
+	SINGLEINSTANCE="yes"
+	icon = 'sal.ico'
 />
 <html>
 <title>MA Info</title>
@@ -22,8 +22,8 @@ button {
 }
 </style>
 <script type="text/javascript">
-  var ACT_VERSION = "1.0.0.172902102016";
-  var REMOTE_VERSION_URL = "http://pastebin.com/raw/meABzcj8";
+  var ACT_VERSION = "1.0.3.09022017";
+  var REMOTE_VERSION_URL = "https://raw.githubusercontent.com/akuess/MA-Info/master/res/version";
   var username = "";
   var defaultPage = "";
 
@@ -100,33 +100,43 @@ button {
   // default CSS content  
   function defaultLinks(tab){
 	switch(tab){
-		case 'reset': 
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'CSS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'Bereich CSS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=2400&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'SPS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10024203&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'SAM':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=2430&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
-			break;
-		case '1st-Level':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=&viewmod=2&_optinorout=&action=show';
-			break;			
-		case '2nd-Level':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=&viewmod=2&_optinorout=&action=show';
-			break;			
-		case 'EDV':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=1005130&_optman=&viewmod=2&_optinorout=&action=show';
-			break;			
-		case 'CSS-Monitor':
-			document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
-			break;
+	case 'reset': 
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo';
+		break;
+	case 'CSS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case 'Bereich CSS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
+		break;
+        case 'ITS':
+            	document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10044204&_optman=&viewmod=2&_optinorout=&action=show';
+        	break;
+	case 'SPS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044203&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case 'SAM':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044101&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case '1st-Level':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;			
+	case '2nd-Level':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;			
+	case 'EDV':
+		http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show
+		break;			
+	case 'CSS-Monitor':
+		document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
+		break;
+        case 'W5 Repo':
+        	var shell = new ActiveXObject("WScript.Shell");
+        	shell.run("http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository");
+        	break;
+	default:
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
 	}
   }
   
