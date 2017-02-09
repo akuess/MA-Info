@@ -1,253 +1,247 @@
 <HTA:application
-    APPLICATIONNAME="MA Info"   
-    SCROLL="auto"
-    SINGLEINSTANCE="yes"
-    icon = 'sal.ico'
+  APPLICATIONNAME="MA Info"   
+  SCROLL="auto"
+  SINGLEINSTANCE="yes"
+  icon = 'sal.ico'
 />
 <html>
-<title>MA Info</title>
-<style>
-button {
-    width: 100px;
-}
-
-.deleteBtn {
-    width: 10px;
-}
-
-.right-tab {
-    position: fixed;
-    top: 50%;
-    width: 1100px;
-}
-</style>
-<script type="text/javascript">
-  var ACT_VERSION = "1.0.3.dev";
-  var REMOTE_VERSION_URL = "https://raw.githubusercontent.com/akuess/MA-Info/akuess-patch-1/res/version";
-  var REMOTE_CONTENT_URL = "https://raw.githubusercontent.com/akuess/MA-Info/master/MA-Info.hta";
-  var username = "";
-
-  function initHTA(){
-    document.getElementById("user").value=username;
-    getUsername();
-    defaultLinks("");
-    
-    httpGet(REMOTE_VERSION_URL, "version");
-  };
-
-  // history browsing function
-  var history = new Array(16);
-  hpos = 0;
-  function browseBack() {
-        hpos += 14;
-        hpos %= 16;
-        frames["iFrame"].location.href = history[hpos];
-  }
-  function browseForward() {
+  <title>MA Info</title>
+  <style>
+    button {
+      width: 100px;
+    }
+	
+    .right-tab {
+      position: fixed;
+      top: 50%;
+      width: 1100px;
+    }
+  </style>
+  <script type="text/javascript">
+    var ACT_VERSION = "1.0.3.2000";
+    var REMOTE_VERSION_URL = "https://raw.githubusercontent.com/akuess/MA-Info/akuess-patch-1/res/version";
+    var REMOTE_CONTENT_URL = "https://raw.githubusercontent.com/akuess/MA-Info/akuess-patch-1/MA-Info.hta";
+    var username = "";
+  
+    function initHTA(){
+      document.getElementById("user").value=username;
+      getUsername();
+      defaultLinks("");
+      
+      httpGet(REMOTE_VERSION_URL, "version");
+    };
+  
+    // history browsing function
+    var history = new Array(16);
+    hpos = 0;
+    function browseBack() {
+      hpos += 14;
+      hpos %= 16;
       frames["iFrame"].location.href = history[hpos];
-  }
-  function iFrameBrowseInit() {
+    }
+    function browseForward() {
+      frames["iFrame"].location.href = history[hpos];
+    }
+    function iFrameBrowseInit() {
       l = frames["iFrame"].location.href;
       if (l.lastIndexOf("?") == (l.length - 1)) l = l.substr(0, l.length - 1);
       history[hpos] = l;
       hpos++;
       hpos %= 16;
-  }
-
-  // compare version with remote
-  function compareVersion(remoteVersion){
-      document.getElementById('ver').innerHTML=remoteVersion;
-    if(ACT_VERSION != remoteVersion){
-		document.getElementById("versionLamp").style.backgroundColor="#FF0000"; //color: red
-		spoiler("btnUpdate", true);
-    }else
-        document.getElementById("versionLamp").style.backgroundColor="#00FF00"; //color: green
-
-  }
-  function updateMaInfo(remoteContent){
-    var fso = new ActiveXObject("Scripting.FileSystemObject");
-	var a = fso.CreateTextFile("MA-Info.hta", true);
-	a.Write(remoteContent);
-	a.Close();
-	alert("Updated to Version "+ACT_VERSION);
-	location.reload(); 
-	spoiler("btnUpdate", false);
-  }
-  
-  // get remote content
-  function httpGet(url, action) {
-    if (window.XMLHttpRequest) {
-        xmlhttp=new XMLHttpRequest();
-    } else {
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
     }
-    xmlhttp.onreadystatechange=function() {
+  
+    // compare version with remote
+    function compareVersion(remoteVersion){
+      document.getElementById('ver').innerHTML=remoteVersion;
+      if(ACT_VERSION != remoteVersion){
+  	    document.getElementById("versionLamp").style.backgroundColor="#FF0000"; //color: red
+  	    spoiler("btnUpdate", true);
+      }else
+        document.getElementById("versionLamp").style.backgroundColor="#00FF00"; //color: green
+    }
+    function updateMaInfo(remoteContent){
+      var fso = new ActiveXObject("Scripting.FileSystemObject");
+  	  var a = fso.CreateTextFile("MA-Info.hta", true);
+  	  a.Write(remoteContent);
+  	  a.Close();
+  	  alert(unescape("Update durchgef%FChrt.\nApplikation wird beendet."));
+  	  window.open('','_self').close()
+  	  spoiler("btnUpdate", false);
+    }
+    
+    // get remote content
+    function httpGet(url, action) {
+      if (window.XMLHttpRequest) {
+        xmlhttp=new XMLHttpRequest();
+      } else {
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            switch(action){
-                case "version":
-                    compareVersion(xmlhttp.responseText.replace(/(\r\n|\n|\r)/gm,""));
-                break;
-				case "update":
-					updateMaInfo(xmlhttp.responseText);
-				break;
+          switch(action){
+            case "version":
+              compareVersion(xmlhttp.responseText.replace(/(\r\n|\n|\r)/gm,""));
+              break;
+  		    case "update":
+  			  updateMaInfo(xmlhttp.responseText);
+  			  break;
             }
         }
+      }
+      xmlhttp.open("GET", url, false );
+      xmlhttp.send();    
     }
-    xmlhttp.open("GET", url, false );
-    xmlhttp.send();    
-  }
-  
-  // resize frame content
-  var framefenster = document.getElementsByTagName("iFrame");
-  var auto_resize_timer = window.setInterval("autoresize_frames()", 400);
-  function autoresize_frames() {
-    for (var i = 0; i < framefenster.length; ++i) {
+    
+    // resize frame content
+    var framefenster = document.getElementsByTagName("iFrame");
+    var auto_resize_timer = window.setInterval("autoresize_frames()", 400);
+    function autoresize_frames() {
+      for (var i = 0; i < framefenster.length; ++i) {
         if(framefenster[i].contentWindow.document.body){
           var framefenster_size = framefenster[i].contentWindow.document.body.offsetHeight;
           if(document.all && !window.opera) {
             framefenster_size = framefenster[i].contentWindow.document.body.scrollHeight;
           }
-          framefenster[i].style.height = framefenster_size + 'px';
+            framefenster[i].style.height = framefenster_size + 'px';
         }
+      }
     }
-  }
-
-  // default CSS content  
-  function defaultLinks(tab){
-    switch(tab){
-    case 'reset': 
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&viewmod=2';
-        break;
-    case 'CSS':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-        break;
-    case 'Bereich CSS':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
-        break;
-    case 'ITS':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10044204&_optman=&viewmod=2&_optinorout=&action=show';
-        break;
-    case 'SPS':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044203&_optman=saa&viewmod=2&_optinorout=&action=show';
-        break;
-    case 'SAM':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4410&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
-        break;
-    case '1st-Level':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=saa&viewmod=2&_optinorout=&action=show';
-        break;            
-    case '2nd-Level':
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=saa&viewmod=2&_optinorout=&action=show';
-        break;            
-    case 'EDV':
-        http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show
-        break;            
-    case 'CSS-Monitor':
-        document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
-        break;
+  
+    // default CSS content  
+    function defaultLinks(tab){
+      switch(tab){
+        case 'reset': 
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&viewmod=2';
+          break;
+        case 'CSS':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+          break;
+        case 'Bereich CSS':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
+          break;
+        case 'ITS':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10044204&_optman=&viewmod=2&_optinorout=&action=show';
+          break;
+        case 'SPS':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044203&_optman=saa&viewmod=2&_optinorout=&action=show';
+          break;
+        case 'SAM':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4410&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
+          break;
+        case '1st-Level':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=saa&viewmod=2&_optinorout=&action=show';
+          break;            
+        case '2nd-Level':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=saa&viewmod=2&_optinorout=&action=show';
+          break;            
+        case 'EDV':
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
+          break;            
+        case 'CSS-Monitor':
+          document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
+          break;
         case 'W5 Repo':
-            var shell = new ActiveXObject("WScript.Shell");
-            shell.run("http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository");
-            break;
-    default:
-        document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-        break;
+          var shell = new ActiveXObject("WScript.Shell");
+          shell.run("http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository");
+          break;
+        default:
+          document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+          break;
+      }
     }
-  }
-  
-  // sets the src value of the iframe
-  function setFrameContentUrl(url){
-    alert("URL: "+url)
-    document.getElementById('iFrame').src=url;
-  }
-  
-  function showActualUrl(){
-    document.getElementById('url').value=parent.frames["iFrame"].location;
-  }
-  
-  //set visible state of an object
-  function spoiler(id, visible){
-    if(visible)
+    
+    // sets the src value of the iframe
+    function setFrameContentUrl(url){
+      alert("URL: "+url)
+      document.getElementById('iFrame').src=url;
+    }
+    
+    function showActualUrl(){
+      document.getElementById('url').value=parent.frames["iFrame"].location;
+    }
+    
+    //set visible state of an object
+    function spoiler(id, visible){
+      if(visible)
         document.getElementById(id).style.display = 'inline';
-    else
+      else
         document.getElementById(id).style.display = 'inline';
-  }
-  
-  //toggle visible state of an object
-  function spoilerToggle(id){
-   if(document.getElementById(id).style.display == "inline")
+    }
+    
+    //toggle visible state of an object
+    function spoilerToggle(id){
+      if(document.getElementById(id).style.display == "inline")
         document.getElementById(id).style.display = 'none';
-    else {
-        
+      else {     
         document.getElementById(id).style.display = 'inline';
+      }
     }
-  }
+    
+    // send vpn token to the actual username as an mail
+    function sendVpnTokenMail(){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send('mpp_userid='+username);
+    }
   
-  // send vpn token to the actual username as an mail
-  function sendVpnTokenMail(){
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send('mpp_userid='+username);
-  }
-
-  // send vpn token to the actual username as an sms
-  function sendVpnTokenSMS(){
-  var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send('mpp_route=SMS&mpp_userid='+username);
-  }
+    // send vpn token to the actual username as an sms
+    function sendVpnTokenSMS(){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send('mpp_route=SMS&mpp_userid='+username);
+    }
+    
+    // read the actual usernam
+    function getUsername(){
+      var WinNetwork = new ActiveXObject("WScript.Network");
+      username = WinNetwork.UserName;
+      document.getElementById("user").value=username;
+      document.getElementById("AppUser").innerHTML="Username: "+username;
+    }
+    
+    // sets the new username from the input field
+    function setUsername(){
+      username = document.getElementById("user").value;
+    }
   
-  // read the actual usernam
-  function getUsername(){
-    var WinNetwork = new ActiveXObject("WScript.Network");
-    username = WinNetwork.UserName;
-    document.getElementById("user").value=username;
-    document.getElementById("AppUser").innerHTML="Username: "+username;
-  }
+  </script>
+  <body onLoad="initHTA()">
+    <div id="fav">
+      <span style="float:right">
+        <span id="ver" style="display:none"></span>
+  	  <button id="btnUpdate" style="width:50px; display:none" onClick="httpGet(REMOTE_CONTENT_URL, 'update');">update</button>
+        <span id="versionLamp" style="width:20px; background-color:#00FF00"></span>
+        <button style="width: 30px" onClick="browseBack();"><<</button>
+        <button style="width: 30px" onClick="browseForward();">>></button>
+      </span>
+      <div>
+        <button onclick="spoilerToggle('url_opt'); showActualUrl();">URL</button>
+        <button onclick="defaultLinks('reset');">reset Filter</button>
+        <button onclick="spoilerToggle('inputuser');">Send Token</button>
+        <span id="AppUser"></span>
+      </div>
   
-  // sets the new username from the input field
-  function setUsername(){
-    username = document.getElementById("user").value;
-  }
-
-</script>
-<body onLoad="initHTA()">
-<div id="fav">
-    <span style="float:right">
-      <span id="ver" style="display:none"></span>
-	  <button id="btnUpdate" style="width:50px; display:none" onClick="httpGet(REMOTE_CONTENT_URL, 'update');">update</button>
-      <span id="versionLamp" style="width:20px; background-color:#00FF00"></span>
-      <button style="width: 30px" onClick="browseBack();"><<</button>
-      <button style="width: 30px" onClick="browseForward();">>></button>
-    </span>
-    <div>
-      <button onclick="spoilerToggle('url_opt'); showActualUrl();">URL</button>
-      <button onclick="defaultLinks('reset');">reset Filter</button>
-      <button onclick="spoilerToggle('inputuser');">Send Token</button>
-    <span id="AppUser"></span>
+      <button onclick="defaultLinks('CSS');">CSS</button>
+      <button onclick="defaultLinks('Bereich CSS');">Bereich CSS</button>
+      <button onclick="defaultLinks('SAM');">SAM</button>
+      <button onclick="defaultLinks('1st-Level');">1st-Level</button>
+      <button onclick="defaultLinks('2nd-Level');">2nd-Level</button>
+      <button onclick="defaultLinks('SPS');">SPS</button>
+      <button onclick="defaultLinks('EDV');">EDV</button>
+      <button onclick="defaultLinks('CSS-Monitor');">CSS-Monitor</button>
+      </br>
+      <span id="customeFav"></span>
     </div>
-
-    <button onclick="defaultLinks('CSS');">CSS</button>
-    <button onclick="defaultLinks('Bereich CSS');">Bereich CSS</button>
-    <button onclick="defaultLinks('SAM');">SAM</button>
-    <button onclick="defaultLinks('1st-Level');">1st-Level</button>
-    <button onclick="defaultLinks('2nd-Level');">2nd-Level</button>
-    <button onclick="defaultLinks('SPS');">SPS</button>
-    <button onclick="defaultLinks('EDV');">EDV</button>
-    <button onclick="defaultLinks('CSS-Monitor');">CSS-Monitor</button>
-    </br>
-    <span id="customeFav"></span>
-</div>
-<div id="url_opt" style="display:none">
-    URL: <input id="url" size="200">
-</div>
-<div id="inputuser" style="display:none">
-    Benutzer: <input id="user" size="20" value=""/>
-    <button onclick="setUsername(); sendVpnTokenMail(); spoilerToggle('inputuser');">Send Mail</button>
-    <button onclick="setUsername(); sendVpnTokenSMS(); spoilerToggle('inputuser');">Send SMS</button>
-</div>
-<iframe name="iFrame" id="iFrame" onload="iFrameBrowseInit();" src="" style="width:100%; height:100%; border:none;" frameborder="0" scrolling="no">NoDefaultPage</iframe>
-</body>
+    <div id="url_opt" style="display:none">
+      URL: <input id="url" size="200">
+    </div>
+    <div id="inputuser" style="display:none">
+      Benutzer: <input id="user" size="20" value=""/>
+      <button onclick="setUsername(); sendVpnTokenMail(); spoilerToggle('inputuser');">Send Mail</button>
+      <button onclick="setUsername(); sendVpnTokenSMS(); spoilerToggle('inputuser');">Send SMS</button>
+    </div>
+    <iframe name="iFrame" id="iFrame" onload="iFrameBrowseInit();" src="" style="width:100%; height:100%; border:none;" frameborder="0" scrolling="no">NoDefaultPage</iframe>
+  </body>
 </html>
