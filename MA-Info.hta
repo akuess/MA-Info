@@ -1,55 +1,67 @@
 <HTA:application
 	APPLICATIONNAME="MA Info"   
-     SCROLL="auto"
-     SINGLEINSTANCE="yes"
-     icon = 'sal.ico'
+	SCROLL="auto"
+	SINGLEINSTANCE="yes"
+	icon = 'sal.ico'
 />
 <html>
 <title>MA Info</title>
 <style>
-.deleteBtn {width: 10px;}
-button {width: 100px;}
+button {
+	width: 100px;
+}
+
+.deleteBtn {
+	width: 10px;
+}
+
 .right-tab {
     position: fixed;
     top: 50%;
     width: 1100px;
-
+}
 </style>
 <script type="text/javascript">
-  var version = "1.0.0.172902102016";
-  var repo_version = "";
+  var ACT_VERSION = "1.0.3.09022017";
+  var REMOTE_VERSION_URL = "https://raw.githubusercontent.com/akuess/MA-Info/master/res/version";
   var username = "";
-  var defaultPage = "http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=2420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show";
 
   function initHTA(){
 	document.getElementById("user").value=username;
-	document.getElementById('iFrame').src=defaultPage;
-	readUsername();
+	getUsername();
+    defaultLinks("");
 	
-	httpGet("http://pastebin.com/raw/meABzcj8", "check");
+	httpGet(REMOTE_VERSION_URL, "version");
   };
 
-
+  // history browsing function
   var history = new Array(16);
   hpos = 0;
-  function back() {
+  function browseBack() {
         hpos += 14;
         hpos %= 16;
         frames["iFrame"].location.href = history[hpos];
   }
-  function forward() {
+  function browseForward() {
       frames["iFrame"].location.href = history[hpos];
   }
-
- function iFrameOnLoad() {
+  function iFrameBrowseInit() {
       l = frames["iFrame"].location.href;
       if (l.lastIndexOf("?") == (l.length - 1)) l = l.substr(0, l.length - 1);
-      //document.all.currAddr.innerHTML = l;
       history[hpos] = l;
       hpos++;
       hpos %= 16;
-    }
+  }
 
+  // compare version with remote
+  function compareVersion(remoteVersion){
+	if(ACT_VERSION != remoteVersion)
+		document.getElementById("versionLamp").style.backgroundColor="#FF0000";
+	else
+		document.getElementById("versionLamp").style.backgroundColor="#00FF00";
+  }
+  
+  // get remote content
   function httpGet(url, action) {
     if (window.XMLHttpRequest) {
         xmlhttp=new XMLHttpRequest();
@@ -67,8 +79,9 @@ button {width: 100px;}
     }
     xmlhttp.open("GET", url, false );
     xmlhttp.send();    
-}
-
+  }
+  
+  // resize frame content
   var framefenster = document.getElementsByTagName("iFrame");
   var auto_resize_timer = window.setInterval("autoresize_frames()", 400);
   function autoresize_frames() {
@@ -83,59 +96,69 @@ button {width: 100px;}
     }
   }
 
+  // default CSS content  
   function defaultLinks(tab){
 	switch(tab){
-		case 'reset': 
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo';
-			break;
-		case 'CSS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'Bereich CSS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=1&_optinorout=&action=show';
-			break;
+	case 'reset': 
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo';
+		break;
+	case 'CSS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case 'Bereich CSS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show';
+		break;
         case 'ITS':
-            document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10044204&_optman=&viewmod=1&_optinorout=&action=show';
-            break;
-		case 'SPS':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044203&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case 'SAM':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044101&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;
-		case '1st-Level':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;			
-		case '2nd-Level':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=saa&viewmod=2&_optinorout=&action=show';
-			break;			
-		case 'EDV':
-			document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=1001125&_optman=&viewmod=2&_optinorout=&action=show';
-			break;			
-		case 'CSS-Monitor':
-			document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
-			break;
+            	document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=10044204&_optman=&viewmod=2&_optinorout=&action=show';
+        	break;
+	case 'SPS':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044203&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case 'SAM':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044101&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
+	case '1st-Level':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044201&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;			
+	case '2nd-Level':
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=&_optteam=10044202&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;			
+	case 'EDV':
+		http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4400&_optteam=&_optman=&viewmod=2&_optinorout=&action=show
+		break;			
+	case 'CSS-Monitor':
+		document.getElementById('iFrame').src='http://172.28.33.198:8080/cssmonitor/';
+		break;
         case 'W5 Repo':
-            //document.getElementById('iFrame').src='http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository';
-            var shell = new ActiveXObject("WScript.Shell");
-            shell.run("http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository");
-        break;
+        	var shell = new ActiveXObject("WScript.Shell");
+        	shell.run("http://wiki.salomon.at/wiki/index.php/TS_PROJEKTE_Wamas_5_Repository");
+        	break;
+	default:
+		document.getElementById('iFrame').src='http://salxip03.salomon.at/crminfo/index.php?modul=mainfo&_namema=&_optkst=4420&_optteam=&_optman=saa&viewmod=2&_optinorout=&action=show';
+		break;
 	}
   }
+  
+  // sets the src value of the iframe
   function setFrameContentUrl(url){
 	alert("URL: "+url)
 	document.getElementById('iFrame').src=url;
   }
   
+  function showActualUrl(){
+    document.getElementById('url').value=parent.frames["iFrame"].location;
+  }
+  
+  //set visible state of an object
   function spoiler(id, visible){
 	if(visible)
 		document.getElementById(id).style.display = 'inline';
 	else
 		document.getElementById(id).style.display = 'inline';
   }
+  
+  //toggle visible state of an object
   function spoilerToggle(id){
-   if(id=="url_opt")
-			document.getElementById('url').value=parent.frames["iFrame"].location;
    if(document.getElementById(id).style.display == "inline")
 		document.getElementById(id).style.display = 'none';
 	else {
@@ -144,98 +167,47 @@ button {width: 100px;}
 	}
   }
   
-function sendTokenMail(){
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
-  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhr.send('mpp_userid='+username);
-}
+  // send vpn token to the actual username as an mail
+  function sendVpnTokenMail(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send('mpp_userid='+username);
+  }
 
-function sendTokenSMS(){
+  // send vpn token to the actual username as an sms
+  function sendVpnTokenSMS(){
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
-  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhr.send('mpp_route=SMS&mpp_userid='+username);
-}
-
-function readUsername(){
-var WinNetwork = new ActiveXObject("WScript.Network");
+    xhr.open('POST', 'https://smspass.salomon.at/portal/sms?mpp_command=SendPw', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send('mpp_route=SMS&mpp_userid='+username);
+  }
+  
+  // read the actual usernam
+  function getUsername(){
+    var WinNetwork = new ActiveXObject("WScript.Network");
     username = WinNetwork.UserName;
 	document.getElementById("user").value=username;
 	document.getElementById("AppUser").innerHTML="Username: "+username;
-}
-
-
-/*
-window.onunload = 
-function writeConfig(){
-var fso = new ActiveXObject("Scripting.FileSystemObject");
-var a = fso.CreateTextFile("MA_INFO.hta", true);
-username=document.getElementById("user").value;
-a.WriteLine("username:"+username);
-a.Close();
-}
-
-function readConfig(){
-var fso = new ActiveXObject("Scripting.FileSystemObject");
-var f = fso.OpenTextFile("MA_INFO.sav",1);
-if(fso.FileExists("MA_INFO.sav")){
-	var configCsv = f.ReadAll();
-	var config = configCsv.split(/:/)
-	if(config[1]!=""){
-		username=config[1];
-	}
-}else{
-	var person = prompt("Please enter your shortName", "akuess");
-	username=person;
-}
-
-f.Close();
-}
-*/
-
-function deleteCustomeFav(btnId){
-	alert(document.getElementById(btnId).innerHTML);
-}
-
-
-function addCustomeFav(){
-	var customeSection = document.getElementById("customeFav");
-	var btnName = document.getElementById("addCustFavName").value;
-	var btnUrl = document.getElementById("addCustFavUrl").value;
-	var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
-	var b64Name = Base64.encode(btnName);
-	
-	var buttonNode= document.createElement('button');
-	buttonNode.setAttribute('id',b64Name);
-	buttonNode.setAttribute('value',btnName);
-	buttonNode.setAttribute('onclick',"setFrameContentUrl('"+btnUrl+"')");
-	document.getElementById("customeFav").appendChild(buttonNode);
-	
-	var delButtonNode= document.createElement('input');
-	delButtonNode.setAttribute('id',b64Name);
-	delButtonNode.setAttribute('name','delete');
-	delButtonNode.setAttribute('class','deleteBtn');
-	delButtonNode.setAttribute('value',"X");
-	delButtonNode.setAttribute('type','button');
-	delButtonNode.setAttribute('onclick',"deleteCustomeFav('"+b64Name+"')");
-	document.getElementById("customeFav").appendChild(delButtonNode);
-	
-}
+  }
+  
+  // sets the new username from the input field
+  function setUsername(){
+    username = document.getElementById("user").value;
+  }
 
 </script>
 <body onLoad="initHTA()">
 <div id="fav">
     <span style="float:right">
 	  <span id="versionLamp" style="width:20px; background-color:#00FF00"></span>
-	  <button style="width: 30px" onClick="back();"><<</button>
-	  <button style="width: 30px" onClick="forward();">>></button>
+	  <button style="width: 30px" onClick="browseBack();"><<</button>
+	  <button style="width: 30px" onClick="browseForward();">>></button>
 	</span>
 	<div>
-	  <button onclick="spoilerToggle('url_opt');">URL</button>
+	  <button onclick="spoilerToggle('url_opt'); showActualUrl();">URL</button>
 	  <button onclick="defaultLinks('reset');">reset Filter</button>
 	  <button onclick="spoilerToggle('inputuser');">Send Token</button>
-	  <button onclick="spoilerToggle('addCustFav');" style="display:inner">Add Favorite</button>
 	<span id="AppUser"></span>
 	</div>
 
@@ -246,9 +218,7 @@ function addCustomeFav(){
 	<button onclick="defaultLinks('2nd-Level');">2nd-Level</button>
 	<button onclick="defaultLinks('SPS');">SPS</button>
 	<button onclick="defaultLinks('EDV');">EDV</button>
-    <button onClick="defaultLinks('ITS');">ITS</button>
 	<button onclick="defaultLinks('CSS-Monitor');">CSS-Monitor</button>
-    <button onclick="defaultLinks('W5 Repo');">W5 Repos</button>
 	</br>
 	<span id="customeFav"></span>
 </div>
@@ -257,16 +227,9 @@ function addCustomeFav(){
 </div>
 <div id="inputuser" style="display:none">
 	Benutzer: <input id="user" size="20" value=""/>
-	<button onclick="sendTokenMail(); spoilerToggle('inputuser');">Send Mail</button>
-	<button onclick="sendTokenSMS(); spoilerToggle('inputuser');">Send SMS</button>
+	<button onclick="setUsername(); sendVpnTokenMail(); spoilerToggle('inputuser');">Send Mail</button>
+	<button onclick="setUsername(); sendVpnTokenSMS(); spoilerToggle('inputuser');">Send SMS</button>
 </div>
-<div id="addCustFav" style="display:none">
-	<table>
-		<tr><td>Button Name:</td><td><input id="addCustFavName"></td></tr>
-		<tr><td>URL:</td><td><input id="addCustFavUrl" size="100"></td></tr>
-		<tr><td><button onClick="addCustomeFav()">Add</button></td></tr>
-	</table>
-</div>
-<iframe name="iFrame" id="iFrame" onload="iFrameOnLoad();" src="" style="width:100%; height:100%; border:none;" frameborder="0" scrolling="no">NoDefaultPage</iframe>
+<iframe name="iFrame" id="iFrame" onload="iFrameBrowseInit();" src="" style="width:100%; height:100%; border:none;" frameborder="0" scrolling="no">NoDefaultPage</iframe>
 </body>
 </html>
